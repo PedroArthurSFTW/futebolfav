@@ -39,17 +39,4 @@ class TeamsViewModel: ViewModel(){
     fun getNumberOfTeams(): Int{
         return _teams.value.size
     }
-
-    fun teamWhitMostPlayers(){
-        // Encontrar o time com mais jogadores
-        val mostPlayers = _teams.value.reduce { most, team ->
-            if (team.jogadores.size > most.jogadores.size) team else most
-        }
-
-        // Filtrar e criar uma string com times que têm o mesmo número de jogadores
-        clubMostPlayers.value = _teams.value
-            .filter { team -> team.jogadores.size == mostPlayers.jogadores.size }
-            .map { team -> "${team.nome} (${team.jogadores.size})" }
-            .joinToString(" | ")
-    }
 }

@@ -13,7 +13,6 @@ import com.example.futebolfav.viewmodels.TeamsViewModel
 fun StatisticsScreen(playerViewModel: PlayerViewModel = viewModel(), teamsViewModel: TeamsViewModel = viewModel()) {
     val numberOfPlayer = playerViewModel.getNumberOfPlayer()
     val numberOfTeams = teamsViewModel.getNumberOfTeams()
-    val teamWhitMostPlayers = teamsViewModel.teamWhitMostPlayers()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -29,7 +28,7 @@ fun StatisticsScreen(playerViewModel: PlayerViewModel = viewModel(), teamsViewMo
                 Spacer(modifier = Modifier.height(8.dp))
                 Text("Total Teams: $numberOfTeams") // TODO: Replace with actual count
                 Spacer(modifier = Modifier.height(8.dp))
-                Text("Team with Most Players: $teamWhitMostPlayers") // TODO: Replace with actual data
+                Text("Team with Most Players: 0") // TODO: Replace with actual data
             }
         }
     }

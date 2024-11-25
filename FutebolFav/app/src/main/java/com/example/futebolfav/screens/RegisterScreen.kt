@@ -127,7 +127,7 @@ fun TeamRegistrationForm() {
     var acronym by remember { mutableStateOf("") }
     var foundationYear by remember { mutableStateOf("") }
     var message by remember { mutableStateOf("")}
-    var jogadores: List<Player> = emptyList()
+
     Column {
         OutlinedTextField(
             value = name,
@@ -157,7 +157,7 @@ fun TeamRegistrationForm() {
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = { val team = Team(name,acronym,foundationYear.toInt(),jogadores)
+            onClick = { val team = Team(name,acronym,foundationYear.toInt())
                 registerTeam(team = team,
                     onSuccess = { message = "Player registered successfully!" },
                     onError = { error -> println(message = error) }) },
