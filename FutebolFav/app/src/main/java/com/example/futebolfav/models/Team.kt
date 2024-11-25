@@ -3,5 +3,6 @@ package com.example.futebolfav.models
 data class Team(
     val nome: String,
     val sigla: String,
-    val fundacao: Int
+    val fundacao: Int,
+    val jogadores: List<Player>
 )

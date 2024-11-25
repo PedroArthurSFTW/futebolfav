@@ -5,6 +5,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.futebolfav.api.RetrofitInstance
+import com.example.futebolfav.models.Player
+import com.example.futebolfav.models.Team
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun RegisterScreen() {
@@ -44,11 +50,23 @@ fun RegisterScreen() {
     }
 }
 
+fun registerPlayer(player: Player, onSuccess: ()-> Unit, onError: (String) -> Unit){
+    CoroutineScope(Dispatchers.IO).launch{
+        try {
+            RetrofitInstance.api.createPlayer(player)
+            onSuccess()
+        }catch (e: Exception){
+            onError(e.message ?: "Erro desconhecido")
+        }
+    }
+}
+
 @Composable
 fun PlayerRegistrationForm() {
     var name by remember { mutableStateOf("") }
     var position by remember { mutableStateOf("") }
     var age by remember { mutableStateOf("") }
+    var message by remember { mutableStateOf("")}
 
     Column {
         OutlinedTextField(
@@ -78,8 +96,14 @@ fun PlayerRegistrationForm() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
+
+
         Button(
-            onClick = { /* TODO: Implement player registration */ },
+            onClick = {val player = Player(name,position,age.toInt())
+                      registerPlayer(player = player,
+                          onSuccess = { message = "Player registered successfully!" },
+                          onError = { error -> println(message = error) })
+            },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Register Player")
@@ -87,12 +111,23 @@ fun PlayerRegistrationForm() {
     }
 }
 
+fun registerTeam(team: Team, onSuccess: ()-> Unit, onError: (String) -> Unit){
+    CoroutineScope(Dispatchers.IO).launch{
+        try {
+            RetrofitInstance.api.createTeam(team)
+            onSuccess()
+        }catch (e: Exception){
+            onError(e.message ?: "Erro desconhecido")
+        }
+    }
+}
 @Composable
 fun TeamRegistrationForm() {
     var name by remember { mutableStateOf("") }
     var acronym by remember { mutableStateOf("") }
     var foundationYear by remember { mutableStateOf("") }
-
+    var message by remember { mutableStateOf("")}
+    var jogadores: List<Player> = emptyList()
     Column {
         OutlinedTextField(
             value = name,
@@ -122,7 +157,10 @@ fun TeamRegistrationForm() {
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = { /* TODO: Implement team registration */ },
+            onClick = { val team = Team(name,acronym,foundationYear.toInt(),jogadores)
+                registerTeam(team = team,
+                    onSuccess = { message = "Player registered successfully!" },
+                    onError = { error -> println(message = error) }) },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Register Team")

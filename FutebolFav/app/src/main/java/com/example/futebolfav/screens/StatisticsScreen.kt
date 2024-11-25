@@ -5,9 +5,15 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.futebolfav.viewmodels.PlayerViewModel
+import com.example.futebolfav.viewmodels.TeamsViewModel
 
 @Composable
-fun StatisticsScreen() {
+fun StatisticsScreen(playerViewModel: PlayerViewModel = viewModel(), teamsViewModel: TeamsViewModel = viewModel()) {
+    val numberOfPlayer = playerViewModel.getNumberOfPlayer()
+    val numberOfTeams = teamsViewModel.getNumberOfTeams()
+    val teamWhitMostPlayers = teamsViewModel.teamWhitMostPlayers()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -19,11 +25,11 @@ fun StatisticsScreen() {
             Column(
                 modifier = Modifier.padding(16.dp)
             ) {
-                Text("Total Players: 0") // TODO: Replace with actual count
+                Text("Total Players: $numberOfPlayer") // TODO: Replace with actual count
                 Spacer(modifier = Modifier.height(8.dp))
-                Text("Total Teams: 0") // TODO: Replace with actual count
+                Text("Total Teams: $numberOfTeams") // TODO: Replace with actual count
                 Spacer(modifier = Modifier.height(8.dp))
-                Text("Team with Most Players: N/A") // TODO: Replace with actual data
+                Text("Team with Most Players: $teamWhitMostPlayers") // TODO: Replace with actual data
             }
         }
     }
