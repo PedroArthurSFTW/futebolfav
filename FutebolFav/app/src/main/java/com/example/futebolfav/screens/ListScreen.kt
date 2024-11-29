@@ -1,16 +1,22 @@
 package com.example.futebolfav.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -83,36 +89,55 @@ fun TeamsList(viewModel: TeamsViewModel = viewModel()) {
                         ) {
                             Text(buildAnnotatedString {
                                 withStyle(style = MaterialTheme.typography.titleMedium.toSpanStyle()) {
-                                    append("Nome: ")
+                                    append("NOME: ")
                                 }
-                                append(team.nome)
+                                withStyle(style = TextStyle(fontSize = 16.sp).toSpanStyle()) {
+                                    append(team.nome)
+                                }
                             })
                             Text(buildAnnotatedString {
                                 withStyle(style = MaterialTheme.typography.titleMedium.toSpanStyle()) {
-                                    append("Sigla: ")
+                                    append("SIGLA: ")
                                 }
-                                append(team.sigla)
+                                withStyle(style = TextStyle(fontSize = 16.sp).toSpanStyle()) {
+                                    append(team.sigla)
+                                }
                             })
                             Text(buildAnnotatedString {
                                 withStyle(style = MaterialTheme.typography.titleMedium.toSpanStyle()) {
-                                    append("Ano de Fundação: ")
+                                    append("ANO DE FUNDAÇÃO: ")
                                 }
-                                append("${team.fundacao}")
+                                withStyle(style = TextStyle(fontSize = 16.sp).toSpanStyle()) {
+                                    append("${team.fundacao}")
+                                }
                             })
                             Text(buildAnnotatedString {
                                 withStyle(style = MaterialTheme.typography.titleMedium.toSpanStyle()) {
-                                    append("Número de Jogadores: ")
+                                    append("NÚMERO DE JOGADORES: ")
                                 }
-                                append("${team.jogadores?.size ?: 0}")
+                                withStyle(style = TextStyle(fontSize = 16.sp).toSpanStyle()) {
+                                    append("${team.jogadores?.size ?: 0}")
+                                }
                             })
 
                             if (!team.jogadores.isNullOrEmpty()) {
-                                Text("Jogadores:", style = MaterialTheme.typography.titleMedium)
+                                Text(buildAnnotatedString {
+                                    withStyle(style = MaterialTheme.typography.titleMedium.toSpanStyle()) {
+                                        append("JOGADORES:")
+                                    }
+                                })
                                 val teamPlayers = viewModel.getPlayersByTeam(team.sigla)
                                 teamPlayers.forEach { player ->
                                     Row(verticalAlignment = Alignment.CenterVertically) {
-                                        Text("• ", color = MaterialTheme.colorScheme.primary)
-                                        Text("${player.nome} - ${player.idade} - ${player.posicao}")
+                                        Text(
+                                            "• ",
+                                            color = MaterialTheme.colorScheme.primary,
+                                            style = TextStyle(fontSize = 16.sp)
+                                        )
+                                        Text(
+                                            "${player.nome} - ${player.idade} anos - ${player.posicao}",
+                                            style = TextStyle(fontSize = 16.sp)
+                                        )
                                     }
                                 }
                             }
@@ -121,15 +146,17 @@ fun TeamsList(viewModel: TeamsViewModel = viewModel()) {
                 }
             }
         } else {
-            Text("No teams found")
+            Text("Nenhum time encontrado")
         }
     }
 }
 
 @Composable
-fun PlayersList(viewModel: PlayerViewModel = viewModel()) {
+fun PlayersList(viewModel: PlayerViewModel = viewModel(), teamsViewModel: TeamsViewModel = viewModel()) {
     val players by viewModel.players
+    val teams by teamsViewModel.team
     val errorMessage by viewModel.errorMessage
+    var expandedPlayer by remember { mutableStateOf<Player?>(null) }
 
     Column(modifier = Modifier.padding(16.dp)) {
         errorMessage?.let {
@@ -145,16 +172,84 @@ fun PlayersList(viewModel: PlayerViewModel = viewModel()) {
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Column(
-                            modifier = Modifier.padding(16.dp)
+                            modifier = Modifier.padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            Text(text = "Nome: ${player.nome}")
-                            Text(text = "Posição: ${player.posicao}")
-                            Text(text = "Idade: ${player.idade}")
-                            Text(text = "Time: ${player.time ?: "Nenhum \uD83D\uDEAB"}")
+                            Text(buildAnnotatedString {
+                                withStyle(style = MaterialTheme.typography.titleMedium.toSpanStyle()) {
+                                    append("NOME: ")
+                                }
+                                withStyle(style = TextStyle(fontSize = 16.sp).toSpanStyle()) {
+                                    append(player.nome)
+                                }
+                            })
+                            Text(buildAnnotatedString {
+                                withStyle(style = MaterialTheme.typography.titleMedium.toSpanStyle()) {
+                                    append("POSIÇÃO: ")
+                                }
+                                withStyle(style = TextStyle(fontSize = 16.sp).toSpanStyle()) {
+                                    append(player.posicao)
+                                }
+                            })
+                            Text(buildAnnotatedString {
+                                withStyle(style = MaterialTheme.typography.titleMedium.toSpanStyle()) {
+                                    append("IDADE: ")
+                                }
+                                withStyle(style = TextStyle(fontSize = 16.sp).toSpanStyle()) {
+                                    append("${player.idade}")
+                                }
+                            })
+                            Text(buildAnnotatedString {
+                                withStyle(style = MaterialTheme.typography.titleMedium.toSpanStyle()) {
+                                    append("TIME: ")
+                                }
+                                withStyle(style = TextStyle(fontSize = 16.sp).toSpanStyle()) {
+                                    append(player.time ?: "Nenhum \uD83D\uDEAB")
+                                }
+                            })
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .align(Alignment.CenterHorizontally)
+                            ) {
+                                Button(
+                                    onClick = { expandedPlayer = player },
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = MaterialTheme.colorScheme.primary,
+                                        contentColor = Color.White
+                                    ),
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Add,
+                                        contentDescription = "Adicionar a um time",
+                                        tint = Color.White
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text("ADICIONAR EM UM TIME", color = Color.White)
+                                }
+
+                                DropdownMenu(
+                                    expanded = expandedPlayer == player,
+                                    onDismissRequest = { expandedPlayer = null }
+                                ) {
+                                    teams.forEach { team ->
+                                        DropdownMenuItem(
+                                            text = { Text(team.nome) },
+                                            onClick = {
+                                                viewModel.addPlayerToTeam(player.nome, team.sigla)
+                                                expandedPlayer = null
+                                            }
+                                        )
+                                    }
+                                }
+                            }
                         }
                     }
                 }
             }
+        } else {
+            Text("Nenhum jogador encontrado")
         }
     }
 }

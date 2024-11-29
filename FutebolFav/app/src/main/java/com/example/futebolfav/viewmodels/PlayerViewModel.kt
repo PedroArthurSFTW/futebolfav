@@ -1,13 +1,14 @@
 package com.example.futebolfav.viewmodels
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.futebolfav.api.RetrofitInstance
 import com.example.futebolfav.models.Player
-import com.example.futebolfav.models.Team
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
 class PlayerViewModel: ViewModel(){
     private val _players = mutableStateOf<List<Player>>(emptyList())
@@ -20,6 +21,18 @@ class PlayerViewModel: ViewModel(){
 
     init {
         getPlayers()
+    }
+
+    fun addPlayerToTeam(playerName: String, teamSigla: String) {
+        viewModelScope.launch {
+            try {
+                RetrofitInstance.api.addPlayerToTeam(playerName, teamSigla)
+            } catch (e: HttpException) {
+                val errorBody = e.response()?.errorBody()?.string()
+                Log.e("AddPlayerError", "HTTP Error: ${e.code()} - $errorBody")
+                _errorMessage.value = errorBody
+            }
+        }
     }
 
     private fun getPlayers() {
