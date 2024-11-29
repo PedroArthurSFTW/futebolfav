@@ -53,19 +53,19 @@ fun BottomNavigation(navController: NavHostController) {
 
         NavigationBarItem(
             icon = { Icon(Icons.Default.Add, contentDescription = "Register") },
-            label = { Text("Register") },
+            label = { Text("Cadastrar") },
             selected = currentRoute == "register",
             onClick = { navController.navigate("register") }
         )
         NavigationBarItem(
             icon = { Icon(Icons.AutoMirrored.Filled.List, contentDescription = "List") },
-            label = { Text("List") },
+            label = { Text("Listas") },
             selected = currentRoute == "list",
             onClick = { navController.navigate("list") }
         )
         NavigationBarItem(
-            icon = { Icon(Icons.Default.Home, contentDescription = "Statistics") }, // TODO: Replace with actual icon
-            label = { Text("Statistics") },
+            icon = { Icon(Icons.Default.Home, contentDescription = "Statistics") },
+            label = { Text("Estatísticas") },
             selected = currentRoute == "statistics",
             onClick = { navController.navigate("statistics") }
         )

@@ -77,13 +77,13 @@ fun TeamsList(viewModel: TeamsViewModel = viewModel()) {
                         Column(
                             modifier = Modifier.padding(16.dp)
                         ) {
-                            Text(text = "Name: ${team.nome}")
-                            Text(text = "Acronym: ${team.sigla}")
-                            Text(text = "Foundation Year: ${team.fundacao}")
-                            Text(text = "Players: ${team.jogadores?.size ?: 0}")
+                            Text(text = "Nome: ${team.nome}")
+                            Text(text = "Sigla: ${team.sigla}")
+                            Text(text = "Ano de Fundação: ${team.fundacao}")
+                            Text(text = "Número de Jogadores: ${team.jogadores?.size ?: 0}")
 
                             team.jogadores?.let { players ->
-                                Text("Players:")
+                                Text("Jogadores:")
                                 players.forEach { playerName ->
                                     Text(playerName)
                                 }

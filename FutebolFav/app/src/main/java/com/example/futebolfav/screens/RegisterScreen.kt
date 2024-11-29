@@ -1,6 +1,9 @@
 package com.example.futebolfav.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -67,31 +70,95 @@ fun PlayerRegistrationForm() {
     var position by remember { mutableStateOf("") }
     var age by remember { mutableStateOf("") }
     var message by remember { mutableStateOf("")}
+    var isPositionDropdownExpanded by remember { mutableStateOf(false) }
+
+    var nameError by remember { mutableStateOf(false) }
+    var positionError by remember { mutableStateOf(false) }
+    var ageError by remember { mutableStateOf(false) }
+
+
+    val positions = listOf(
+        "GOL", "ZAG", "LD", "LE", "ADE", "ADD", "VOL",
+        "MC", "MEI", "ME", "MD", "PE", "SA", "ATA", "PD"
+    )
 
     Column {
         OutlinedTextField(
             value = name,
-            onValueChange = { name = it },
+            onValueChange = {
+                name = it
+                nameError = it.trim().isEmpty()
+            },
             label = { Text("Nome") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            isError = nameError,
+            supportingText = {
+                if (nameError) Text("Nome é obrigatório", color = MaterialTheme.colorScheme.error)
+            }
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        OutlinedTextField(
-            value = position,
-            onValueChange = { position = it },
-            label = { Text("Posição") },
-            modifier = Modifier.fillMaxWidth()
-        )
+        Box(modifier = Modifier.fillMaxWidth()) {
+            OutlinedTextField(
+                value = position.ifEmpty { "Selecione a posição" },
+                onValueChange = {},
+                readOnly = true,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { isPositionDropdownExpanded = true },
+                trailingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.ArrowDropDown,
+                        contentDescription = "Dropdown"
+                    )
+                },
+                isError = positionError
+            )
+
+            DropdownMenu(
+                expanded = isPositionDropdownExpanded,
+                onDismissRequest = { isPositionDropdownExpanded = false },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentSize()
+            ) {
+                positions.forEach { positionOption ->
+                    DropdownMenuItem(
+                        text = { Text(positionOption) },
+                        onClick = {
+                            position = positionOption
+                            isPositionDropdownExpanded = false
+                            positionError = false
+                        }
+                    )
+                }
+            }
+        }
+
+        if (positionError) {
+            Text(
+                text = "Posição é obrigatória",
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+            )
+        }
 
         Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
             value = age,
-            onValueChange = { age = it },
+            onValueChange = {
+                age = it
+                ageError = it.trim().isEmpty()
+            },
             label = { Text("Idade") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            isError = ageError,
+            supportingText = {
+                if (ageError) Text("Idade é obrigatória", color = MaterialTheme.colorScheme.error)
+            }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -99,14 +166,42 @@ fun PlayerRegistrationForm() {
 
 
         Button(
-            onClick = {val player = Player(name,position,age.toInt())
-                      registerPlayer(player = player,
-                          onSuccess = { message = "Jogador cadastrado com sucesso!" },
-                          onError = { error -> println(message = error) })
+            onClick = {
+
+                nameError = name.trim().isEmpty()
+                positionError = position.trim().isEmpty()
+                ageError = age.trim().isEmpty() || age.toIntOrNull() == null
+
+                if (!nameError && !positionError && !ageError) {
+                    val player = Player(name, position, age.toInt())
+                    registerPlayer(
+                        player = player,
+                        onSuccess = {
+                            message = "Jogador cadastrado com sucesso!"
+
+                            name = ""
+                            position = ""
+                            age = ""
+
+                            nameError = false
+                            positionError = false
+                            ageError = false
+                        },
+                        onError = { error -> message = error }
+                    )
+                }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("CADASTRAR JOGADOR")
+        }
+
+        if (message.isNotEmpty()) {
+            Text(
+                text = message,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(top = 8.dp)
+            )
         }
     }
 }
@@ -128,51 +223,101 @@ fun TeamRegistrationForm() {
     var foundationYear by remember { mutableStateOf("") }
     var message by remember { mutableStateOf("")}
 
+    var nameError by remember { mutableStateOf(false) }
+    var acronymError by remember { mutableStateOf(false) }
+    var foundationYearError by remember { mutableStateOf(false) }
+
     Column {
         OutlinedTextField(
             value = name,
-            onValueChange = { name = it },
+            onValueChange = {
+                name = it
+                nameError = it.trim().isEmpty()
+            },
             label = { Text("Nome") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            isError = nameError,
+            supportingText = {
+                if (nameError) Text("Nome é obrigatório", color = MaterialTheme.colorScheme.error)
+            }
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
             value = acronym,
-            onValueChange = { acronym = it },
+            onValueChange = {
+                acronym = it.take(4).uppercase()
+                acronymError = it.trim().isEmpty()
+            },
             label = { Text("Sigla") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            isError = acronymError,
+            supportingText = {
+                if (acronymError) Text("Sigla é obrigatória", color = MaterialTheme.colorScheme.error)
+            }
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
             value = foundationYear,
-            onValueChange = { foundationYear = it },
+            onValueChange = {
+                foundationYear = it
+                foundationYearError = it.trim().isEmpty() || it.toIntOrNull() == null
+            },
             label = { Text("Ano de Fundação") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            isError = foundationYearError,
+            supportingText = {
+                if (foundationYearError) Text("Ano de Fundação é obrigatório", color = MaterialTheme.colorScheme.error)
+            }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
             onClick = {
-                val team = Team(
-                    nome = name,
-                    sigla = acronym,
-                    fundacao = foundationYear.toInt(),
-                    jogadores = emptyList()
-                )
-                registerTeam(
-                    team = team,
-                    onSuccess = { message = "Time cadastrado com sucesso!" },
-                    onError = { error -> println(message = error) }
-                )
+
+                nameError = name.trim().isEmpty()
+                acronymError = acronym.trim().isEmpty()
+                foundationYearError = foundationYear.trim().isEmpty() || foundationYear.toIntOrNull() == null
+
+                if (!nameError && !acronymError && !foundationYearError) {
+                    val team = Team(
+                        nome = name,
+                        sigla = acronym,
+                        fundacao = foundationYear.toInt(),
+                        jogadores = emptyList()
+                    )
+                    registerTeam(
+                        team = team,
+                        onSuccess = {
+                            message = "Time cadastrado com sucesso!"
+
+                            name = ""
+                            acronym = ""
+                            foundationYear = ""
+
+                            nameError = false
+                            acronymError = false
+                            foundationYearError = false
+                        },
+                        onError = { error -> message = error }
+                    )
+                }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("CADASTRAR TIME")
+        }
+
+        if (message.isNotEmpty()) {
+            Text(
+                text = message,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(top = 8.dp)
+            )
         }
     }
 }
