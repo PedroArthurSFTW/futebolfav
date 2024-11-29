@@ -5,8 +5,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.LineHeightStyle
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -75,17 +78,42 @@ fun TeamsList(viewModel: TeamsViewModel = viewModel()) {
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Column(
-                            modifier = Modifier.padding(16.dp)
+                            modifier = Modifier.padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            Text(text = "Nome: ${team.nome}")
-                            Text(text = "Sigla: ${team.sigla}")
-                            Text(text = "Ano de Fundação: ${team.fundacao}")
-                            Text(text = "Número de Jogadores: ${team.jogadores?.size ?: 0}")
+                            Text(buildAnnotatedString {
+                                withStyle(style = MaterialTheme.typography.titleMedium.toSpanStyle()) {
+                                    append("Nome: ")
+                                }
+                                append(team.nome)
+                            })
+                            Text(buildAnnotatedString {
+                                withStyle(style = MaterialTheme.typography.titleMedium.toSpanStyle()) {
+                                    append("Sigla: ")
+                                }
+                                append(team.sigla)
+                            })
+                            Text(buildAnnotatedString {
+                                withStyle(style = MaterialTheme.typography.titleMedium.toSpanStyle()) {
+                                    append("Ano de Fundação: ")
+                                }
+                                append("${team.fundacao}")
+                            })
+                            Text(buildAnnotatedString {
+                                withStyle(style = MaterialTheme.typography.titleMedium.toSpanStyle()) {
+                                    append("Número de Jogadores: ")
+                                }
+                                append("${team.jogadores?.size ?: 0}")
+                            })
 
-                            team.jogadores?.let { players ->
-                                Text("Jogadores:")
-                                players.forEach { playerName ->
-                                    Text(playerName)
+                            if (!team.jogadores.isNullOrEmpty()) {
+                                Text("Jogadores:", style = MaterialTheme.typography.titleMedium)
+                                val teamPlayers = viewModel.getPlayersByTeam(team.sigla)
+                                teamPlayers.forEach { player ->
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Text("• ", color = MaterialTheme.colorScheme.primary)
+                                        Text("${player.nome} - ${player.idade} - ${player.posicao}")
+                                    }
                                 }
                             }
                         }
@@ -122,7 +150,7 @@ fun PlayersList(viewModel: PlayerViewModel = viewModel()) {
                             Text(text = "Nome: ${player.nome}")
                             Text(text = "Posição: ${player.posicao}")
                             Text(text = "Idade: ${player.idade}")
-                            Text(text = "Time: ${player.siglaTime ?: "Nenhum \uD83D\uDEAB"}")
+                            Text(text = "Time: ${player.time ?: "Nenhum \uD83D\uDEAB"}")
                         }
                     }
                 }

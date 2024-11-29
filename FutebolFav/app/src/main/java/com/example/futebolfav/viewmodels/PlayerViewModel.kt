@@ -40,7 +40,7 @@ class PlayerViewModel: ViewModel(){
     }
 
     fun getPlayersWithoutClub(): Int {
-        return _players.value.count { it.siglaTime == null }
+        return _players.value.count { it.time == null }
     }
 
     fun getOldestPlayer(): Player? {

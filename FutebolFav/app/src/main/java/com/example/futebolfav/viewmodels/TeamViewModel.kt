@@ -5,8 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.futebolfav.api.RetrofitInstance
+import com.example.futebolfav.models.Player
 import com.example.futebolfav.models.Team
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class TeamsViewModel: ViewModel(){
     private val _teams = mutableStateOf<List<Team>>(emptyList())
@@ -37,6 +39,16 @@ class TeamsViewModel: ViewModel(){
 
     fun getNumberOfTeams(): Int{
         return _teams.value.size
+    }
+
+    fun getPlayersByTeam(sigla: String): List<Player> {
+        return try {
+            runBlocking {
+                RetrofitInstance.api.getPlayerByTeam(sigla)
+            }
+        } catch (e: Exception) {
+            emptyList()
+        }
     }
 
     fun getTeamWithMostPlayers(): Pair<Team?, Int> {

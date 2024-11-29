@@ -19,10 +19,10 @@ interface ApiService {
     suspend fun getAllPlayers(): List<Player>
 
     @GET("jogadores/{nome}")
-    suspend fun getPlayersByName(@Path("nome") nome: String): Player
+    suspend fun getPlayerByName(@Path("nome") nome: String): Player
 
     @GET("jogadores/sigla/{sigla}")
-    suspend fun getPlayersByTeam(@Path("sigla") sigla: String): List<Player>
+    suspend fun getPlayerByTeam(@Path("sigla") sigla: String): List<Player>
 
     @POST("times")
     suspend fun createTeam(@Body team: Team): Team
