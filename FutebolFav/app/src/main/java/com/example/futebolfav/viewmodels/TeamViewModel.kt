@@ -9,7 +9,6 @@ import com.example.futebolfav.models.Team
 import kotlinx.coroutines.launch
 
 class TeamsViewModel: ViewModel(){
-    val clubMostPlayers = mutableStateOf("")
     private val _teams = mutableStateOf<List<Team>>(emptyList())
     val team: State<List<Team>> = _teams
 
@@ -38,5 +37,36 @@ class TeamsViewModel: ViewModel(){
 
     fun getNumberOfTeams(): Int{
         return _teams.value.size
+    }
+
+    fun getTeamWithMostPlayers(): Pair<Team?, Int> {
+        _teams.value.forEach { team ->
+            println("Team: ${team.nome}, Players: ${team.jogadores?.size ?: 0}")
+        }
+
+        if (_teams.value.isEmpty()) {
+            return Pair(null, 0)
+        }
+
+        return _teams.value
+            .filter { it.jogadores?.isNotEmpty() == true }
+            .maxByOrNull { it.jogadores?.size ?: 0 }
+            ?.let { Pair(it, it.jogadores?.size ?: 0) }
+            ?: Pair(null, 0)
+    }
+
+    fun getTeamWithLeastPlayers(): Pair<Team?, Int> {
+        return _teams.value
+            .minByOrNull { it.jogadores?.size ?: 0 }
+            ?.let { Pair(it, it.jogadores?.size ?: 0) }
+            ?: Pair(null, 0)
+    }
+
+    fun getOldestTeam(): Team? {
+        return _teams.value.minByOrNull { it.fundacao }
+    }
+
+    fun getYoungestTeam(): Team? {
+        return _teams.value.maxByOrNull { it.fundacao }
     }
 }

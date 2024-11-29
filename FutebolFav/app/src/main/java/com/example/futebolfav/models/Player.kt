@@ -4,5 +4,5 @@ data class Player(
     val nome: String,
     val posicao: String,
     val idade: Int,
-    var siglaTime: String? = null
+    val siglaTime: String? = null
 )

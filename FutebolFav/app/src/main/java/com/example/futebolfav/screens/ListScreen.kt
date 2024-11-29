@@ -35,14 +35,14 @@ fun ListScreen() {
                 onClick = { showPlayers = true },
                 modifier = Modifier.weight(1f)
             ) {
-                Text("Players")
+                Text("Jogadores")
             }
             Spacer(modifier = Modifier.width(8.dp))
             Button(
                 onClick = { showPlayers = false },
                 modifier = Modifier.weight(1f)
             ) {
-                Text("Teams")
+                Text("Times")
             }
         }
 
@@ -55,6 +55,49 @@ fun ListScreen() {
         }
     }
 }
+
+@Composable
+fun TeamsList(viewModel: TeamsViewModel = viewModel()) {
+    val teams by viewModel.team
+    val errorMessage by viewModel.errorMessage
+
+    Column(modifier = Modifier.padding(16.dp)) {
+        errorMessage?.let {
+            Text(text = "Erro: $it", color = MaterialTheme.colorScheme.error)
+        }
+
+        if (teams.isNotEmpty()) {
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(teams) { team ->
+                    Card(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(16.dp)
+                        ) {
+                            Text(text = "Name: ${team.nome}")
+                            Text(text = "Acronym: ${team.sigla}")
+                            Text(text = "Foundation Year: ${team.fundacao}")
+                            Text(text = "Players: ${team.jogadores?.size ?: 0}")
+
+                            team.jogadores?.let { players ->
+                                Text("Players:")
+                                players.forEach { playerName ->
+                                    Text(playerName)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            Text("No teams found")
+        }
+    }
+}
+
 @Composable
 fun PlayersList(viewModel: PlayerViewModel = viewModel()) {
     val players by viewModel.players
@@ -76,12 +119,10 @@ fun PlayersList(viewModel: PlayerViewModel = viewModel()) {
                         Column(
                             modifier = Modifier.padding(16.dp)
                         ) {
-                            Text(text = "Name: ${player.nome}")
-                            Text(text = "Position: ${player.posicao}")
-                            Text(text = "Age: ${player.idade}")
-                            player.siglaTime?.let {
-                                Text(text = "Team: $it")
-                            }
+                            Text(text = "Nome: ${player.nome}")
+                            Text(text = "Posição: ${player.posicao}")
+                            Text(text = "Idade: ${player.idade}")
+                            Text(text = "Time: ${player.siglaTime ?: "Nenhum \uD83D\uDEAB"}")
                         }
                     }
                 }
@@ -89,35 +130,3 @@ fun PlayersList(viewModel: PlayerViewModel = viewModel()) {
         }
     }
 }
-
-@Composable
-fun TeamsList(viewModel: TeamsViewModel = viewModel()) {
-    // TODO: Replace with actual data from API
-    val teams by viewModel.team
-    val errorMessage by viewModel.errorMessage
-
-    Column(modifier = Modifier.padding(16.dp)) {
-
-        errorMessage?.let {
-            Text(text = "Erro: $it", color = MaterialTheme.colorScheme.error)
-        }
-
-        if(teams.isNotEmpty()){
-        LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        items(teams) { team ->
-            Card(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp)
-                ) {
-                    Text(text = "Name: ${team.nome}")
-                    Text(text = "Acronym: ${team.sigla}")
-                    Text(text = "Foundation Year: ${team.fundacao}")
-                }
-            }
-        }
-    }
-}}}

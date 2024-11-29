@@ -10,25 +10,64 @@ import com.example.futebolfav.viewmodels.PlayerViewModel
 import com.example.futebolfav.viewmodels.TeamsViewModel
 
 @Composable
-fun StatisticsScreen(playerViewModel: PlayerViewModel = viewModel(), teamsViewModel: TeamsViewModel = viewModel()) {
-    val numberOfPlayer = playerViewModel.getNumberOfPlayer()
-    val numberOfTeams = teamsViewModel.getNumberOfTeams()
+fun StatisticsScreen(
+    playerViewModel: PlayerViewModel = viewModel(),
+    teamsViewModel: TeamsViewModel = viewModel()
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Card(
             modifier = Modifier.fillMaxWidth()
         ) {
             Column(
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Text("Total Players: $numberOfPlayer") // TODO: Replace with actual count
-                Spacer(modifier = Modifier.height(8.dp))
-                Text("Total Teams: $numberOfTeams") // TODO: Replace with actual count
-                Spacer(modifier = Modifier.height(8.dp))
-                Text("Team with Most Players: 0") // TODO: Replace with actual data
+                Text(
+                    text = "Estatísticas de Clube",
+                    style = MaterialTheme.typography.titleLarge
+                )
+                HorizontalDivider()
+
+                val teamWithMost = teamsViewModel.getTeamWithMostPlayers()
+                val teamWithLeast = teamsViewModel.getTeamWithLeastPlayers()
+                val oldestTeam = teamsViewModel.getOldestTeam()
+                val youngestTeam = teamsViewModel.getYoungestTeam()
+
+                Text("Total de Times: ${teamsViewModel.getNumberOfTeams()}")
+                Text("Times Com Mais Jogadores: ${teamWithMost.first?.nome ?: "N/A"} (${teamWithMost.second} jogadores)")
+                Text("Times Com Menos Jogadores: ${teamWithLeast.first?.nome ?: "N/A"} (${teamWithLeast.second} jogadores)")
+                Text("Time Mais Velho: ${oldestTeam?.nome ?: "N/A"} (${oldestTeam?.fundacao ?: "N/A"} anos)")
+                Text("Time Mais Novo: ${youngestTeam?.nome ?: "N/A"} (${youngestTeam?.fundacao ?: "N/A"} anos)")
+            }
+        }
+
+        Card(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = "Estatísticas dos Jogadores",
+                    style = MaterialTheme.typography.titleLarge
+                )
+                HorizontalDivider()
+
+                val oldestPlayer = playerViewModel.getOldestPlayer()
+                val youngestPlayer = playerViewModel.getYoungestPlayer()
+                val mostCommonPosition = playerViewModel.getMostCommonPosition()
+
+                Text("Total de Jogadores: ${playerViewModel.getNumberOfPlayer()}")
+                Text("Total de Jogadores Sem Clube: ${playerViewModel.getPlayersWithoutClub()}")
+                Text("Jogador Mais Velho: ${oldestPlayer?.nome ?: "N/A"} (${oldestPlayer?.idade ?: "N/A"} anos)")
+                Text("Jogador Mais Novo: ${youngestPlayer?.nome ?: "N/A"} (${youngestPlayer?.idade ?: "N/A"} anos)")
+                Text("Posição Com Mais Jogadores: ${mostCommonPosition.first} (${mostCommonPosition.second} jogadores)")
             }
         }
     }

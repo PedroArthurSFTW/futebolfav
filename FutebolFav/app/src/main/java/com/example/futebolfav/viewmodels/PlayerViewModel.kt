@@ -38,4 +38,24 @@ class PlayerViewModel: ViewModel(){
     fun getNumberOfPlayer(): Int{
         return _players.value.size
     }
+
+    fun getPlayersWithoutClub(): Int {
+        return _players.value.count { it.siglaTime == null }
+    }
+
+    fun getOldestPlayer(): Player? {
+        return _players.value.maxByOrNull { it.idade }
+    }
+
+    fun getYoungestPlayer(): Player? {
+        return _players.value.minByOrNull { it.idade }
+    }
+
+    fun getMostCommonPosition(): Pair<String, Int> {
+        return _players.value
+            .groupBy { it.posicao }
+            .maxByOrNull { it.value.size }
+            ?.let { Pair(it.key, it.value.size) }
+            ?: Pair("", 0)
+    }
 }

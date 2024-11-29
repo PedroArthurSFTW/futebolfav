@@ -29,14 +29,14 @@ fun RegisterScreen() {
                 onClick = { isPlayerRegistration = true },
                 modifier = Modifier.weight(1f)
             ) {
-                Text("Player")
+                Text("Jogador")
             }
             Spacer(modifier = Modifier.width(8.dp))
             Button(
                 onClick = { isPlayerRegistration = false },
                 modifier = Modifier.weight(1f)
             ) {
-                Text("Team")
+                Text("Time")
             }
         }
 
@@ -72,7 +72,7 @@ fun PlayerRegistrationForm() {
         OutlinedTextField(
             value = name,
             onValueChange = { name = it },
-            label = { Text("Player Name") },
+            label = { Text("Nome") },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -81,7 +81,7 @@ fun PlayerRegistrationForm() {
         OutlinedTextField(
             value = position,
             onValueChange = { position = it },
-            label = { Text("Position") },
+            label = { Text("Posição") },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -90,7 +90,7 @@ fun PlayerRegistrationForm() {
         OutlinedTextField(
             value = age,
             onValueChange = { age = it },
-            label = { Text("Age") },
+            label = { Text("Idade") },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -101,12 +101,12 @@ fun PlayerRegistrationForm() {
         Button(
             onClick = {val player = Player(name,position,age.toInt())
                       registerPlayer(player = player,
-                          onSuccess = { message = "Player registered successfully!" },
+                          onSuccess = { message = "Jogador cadastrado com sucesso!" },
                           onError = { error -> println(message = error) })
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Register Player")
+            Text("CADASTRAR JOGADOR")
         }
     }
 }
@@ -132,7 +132,7 @@ fun TeamRegistrationForm() {
         OutlinedTextField(
             value = name,
             onValueChange = { name = it },
-            label = { Text("Team Name") },
+            label = { Text("Nome") },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -141,7 +141,7 @@ fun TeamRegistrationForm() {
         OutlinedTextField(
             value = acronym,
             onValueChange = { acronym = it },
-            label = { Text("Acronym") },
+            label = { Text("Sigla") },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -150,20 +150,29 @@ fun TeamRegistrationForm() {
         OutlinedTextField(
             value = foundationYear,
             onValueChange = { foundationYear = it },
-            label = { Text("Foundation Year") },
+            label = { Text("Ano de Fundação") },
             modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = { val team = Team(name,acronym,foundationYear.toInt())
-                registerTeam(team = team,
-                    onSuccess = { message = "Player registered successfully!" },
-                    onError = { error -> println(message = error) }) },
+            onClick = {
+                val team = Team(
+                    nome = name,
+                    sigla = acronym,
+                    fundacao = foundationYear.toInt(),
+                    jogadores = emptyList()
+                )
+                registerTeam(
+                    team = team,
+                    onSuccess = { message = "Time cadastrado com sucesso!" },
+                    onError = { error -> println(message = error) }
+                )
+            },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Register Team")
+            Text("CADASTRAR TIME")
         }
     }
 }
