@@ -70,7 +70,7 @@ fun PlayerRegistrationForm() {
     var position by remember { mutableStateOf("") }
     var age by remember { mutableStateOf("") }
     var message by remember { mutableStateOf("")}
-    var isPositionDropdownExpanded by remember { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(false) }
 
     var nameError by remember { mutableStateOf(false) }
     var positionError by remember { mutableStateOf(false) }
@@ -99,40 +99,31 @@ fun PlayerRegistrationForm() {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        Box(modifier = Modifier.fillMaxWidth()) {
-            OutlinedTextField(
-                value = position.ifEmpty { "Selecione a posição" },
-                onValueChange = {},
-                readOnly = true,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { isPositionDropdownExpanded = true },
-                trailingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.ArrowDropDown,
-                        contentDescription = "Dropdown"
-                    )
-                },
-                isError = positionError
-            )
-
-            DropdownMenu(
-                expanded = isPositionDropdownExpanded,
-                onDismissRequest = { isPositionDropdownExpanded = false },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentSize()
-            ) {
-                positions.forEach { positionOption ->
-                    DropdownMenuItem(
-                        text = { Text(positionOption) },
-                        onClick = {
-                            position = positionOption
-                            isPositionDropdownExpanded = false
-                            positionError = false
-                        }
-                    )
+        OutlinedTextField(
+            value = position.ifEmpty { "Selecione a posição" },
+            onValueChange = {},
+            readOnly = true,
+            modifier = Modifier.fillMaxWidth(),
+            trailingIcon = {
+                IconButton(onClick = { expanded = true }) {
+                    Icon(Icons.Filled.ArrowDropDown, "Expand dropdown")
                 }
+            }
+        )
+
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            positions.forEach { positionOption ->
+                DropdownMenuItem(
+                    text = { Text(positionOption) },
+                    onClick = {
+                        position = positionOption
+                        expanded = false
+                    }
+                )
             }
         }
 
