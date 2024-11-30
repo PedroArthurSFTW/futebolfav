@@ -12,14 +12,11 @@ interface ApiService {
     @POST("jogadores")
     suspend fun createPlayer(@Body player: Player): Player
 
-    @PUT("jogadores/{nome}/{sigla}")
+    @PUT("times/{nome}/{sigla}")
     suspend fun addPlayerToTeam(@Path("nome") nome: String, @Path("sigla") sigla: String)
 
     @GET("jogadores")
     suspend fun getAllPlayers(): List<Player>
-
-    @GET("jogadores/{nome}")
-    suspend fun getPlayerByName(@Path("nome") nome: String): Player
 
     @GET("jogadores/sigla/{sigla}")
     suspend fun getPlayerByTeam(@Path("sigla") sigla: String): List<Player>
@@ -32,8 +29,5 @@ interface ApiService {
 
     @GET("times")
     suspend fun getAllTeams(): List<Team>
-
-    @GET("times/{sigla}")
-    suspend fun getTeamBySigla(@Path("sigla") sigla: String): Team
 
 }

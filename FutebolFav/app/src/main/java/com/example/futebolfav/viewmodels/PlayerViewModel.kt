@@ -27,6 +27,7 @@ class PlayerViewModel: ViewModel(){
         viewModelScope.launch {
             try {
                 RetrofitInstance.api.addPlayerToTeam(playerName, teamSigla)
+                getPlayers()
             } catch (e: HttpException) {
                 val errorBody = e.response()?.errorBody()?.string()
                 Log.e("AddPlayerError", "HTTP Error: ${e.code()} - $errorBody")

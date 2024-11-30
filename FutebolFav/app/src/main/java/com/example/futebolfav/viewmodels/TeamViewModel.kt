@@ -23,7 +23,7 @@ class TeamsViewModel: ViewModel(){
         getTeams()
     }
 
-    private fun getTeams() {
+    fun getTeams() {
         viewModelScope.launch {
             _isLoading.value = true
             try {

@@ -207,40 +207,43 @@ fun PlayersList(viewModel: PlayerViewModel = viewModel(), teamsViewModel: TeamsV
                                     append(player.time ?: "Nenhum \uD83D\uDEAB")
                                 }
                             })
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .align(Alignment.CenterHorizontally)
-                            ) {
-                                Button(
-                                    onClick = { expandedPlayer = player },
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = MaterialTheme.colorScheme.primary,
-                                        contentColor = Color.White
-                                    ),
-                                    modifier = Modifier.fillMaxWidth()
+                            if (player.time == null) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .align(Alignment.CenterHorizontally)
                                 ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Add,
-                                        contentDescription = "Adicionar a um time",
-                                        tint = Color.White
-                                    )
-                                    Spacer(modifier = Modifier.width(8.dp))
-                                    Text("ADICIONAR EM UM TIME", color = Color.White)
-                                }
-
-                                DropdownMenu(
-                                    expanded = expandedPlayer == player,
-                                    onDismissRequest = { expandedPlayer = null }
-                                ) {
-                                    teams.forEach { team ->
-                                        DropdownMenuItem(
-                                            text = { Text(team.nome) },
-                                            onClick = {
-                                                viewModel.addPlayerToTeam(player.nome, team.sigla)
-                                                expandedPlayer = null
-                                            }
+                                    Button(
+                                        onClick = { expandedPlayer = player },
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = MaterialTheme.colorScheme.primary,
+                                            contentColor = Color.White
+                                        ),
+                                        modifier = Modifier.fillMaxWidth()
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Add,
+                                            contentDescription = "Adicionar a um time",
+                                            tint = Color.White
                                         )
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Text("ADICIONAR EM UM TIME", color = Color.White)
+                                    }
+
+                                    DropdownMenu(
+                                        expanded = expandedPlayer == player,
+                                        onDismissRequest = { expandedPlayer = null }
+                                    ) {
+                                        teams.forEach { team ->
+                                            DropdownMenuItem(
+                                                text = { Text(team.nome) },
+                                                onClick = {
+                                                    viewModel.addPlayerToTeam(player.nome, team.sigla)
+                                                    teamsViewModel.getTeams()
+                                                    expandedPlayer = null
+                                                }
+                                            )
+                                        }
                                     }
                                 }
                             }
