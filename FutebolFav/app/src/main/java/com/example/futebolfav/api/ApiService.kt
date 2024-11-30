@@ -24,10 +24,9 @@ interface ApiService {
     @POST("times")
     suspend fun createTeam(@Body team: Team): Team
 
-    @PUT("times/remove/{nome}/{sigla}")
+    @PUT("times/remove/{sigla}/{nome}")
     suspend fun removePlayerFromTeam(@Path("nome") nome: String, @Path("sigla") sigla: String)
 
     @GET("times")
     suspend fun getAllTeams(): List<Team>
-
 }

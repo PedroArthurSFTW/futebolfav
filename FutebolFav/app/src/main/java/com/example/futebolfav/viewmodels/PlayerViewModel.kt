@@ -5,6 +5,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.futebolfav.api.RetrofitInstance
 import com.example.futebolfav.models.Player
 import kotlinx.coroutines.launch
@@ -71,5 +72,19 @@ class PlayerViewModel: ViewModel(){
             .maxByOrNull { it.value.size }
             ?.let { Pair(it.key, it.value.size) }
             ?: Pair("", 0)
+    }
+
+
+    fun removePlayerFromTeam(nome: String, sigla: String) {
+        viewModelScope.launch {
+            try {
+                RetrofitInstance.api.removePlayerFromTeam(nome, sigla)
+                getPlayers()
+            } catch (e: HttpException) {
+                val errorBody = e.response()?.errorBody()?.string()
+                Log.e("AddPlayerError", "HTTP Error: ${e.code()} - $errorBody")
+                _errorMessage.value = errorBody
+            }
+        }
     }
 }

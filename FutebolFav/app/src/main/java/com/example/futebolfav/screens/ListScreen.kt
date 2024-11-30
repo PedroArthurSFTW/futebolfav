@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -247,12 +248,34 @@ fun PlayersList(viewModel: PlayerViewModel = viewModel(), teamsViewModel: TeamsV
                                     }
                                 }
                             }
+                            if (player.time != null) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .align(Alignment.CenterHorizontally)
+                                ) {
+                                    Button(
+                                        onClick = { viewModel.removePlayerFromTeam(player.nome, player.time) },
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = MaterialTheme.colorScheme.primary,
+                                            contentColor = Color.White
+                                        ),
+                                        modifier = Modifier.fillMaxWidth()
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Delete,
+                                            contentDescription = "Remover do time",
+                                            tint = Color.White
+                                        )
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Text("REMOVER DO TIME", color = Color.White)
+                                    }
+                                }
+                            }
                         }
                     }
                 }
             }
-        } else {
-            Text("Nenhum jogador encontrado")
         }
     }
 }
