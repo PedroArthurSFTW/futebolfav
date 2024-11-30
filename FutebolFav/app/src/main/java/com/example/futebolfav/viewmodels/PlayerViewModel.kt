@@ -37,6 +37,19 @@ class PlayerViewModel: ViewModel(){
         }
     }
 
+    fun removePlayerFromTeam(nome: String, sigla: String) {
+        viewModelScope.launch {
+            try {
+                RetrofitInstance.api.removePlayerFromTeam(nome, sigla)
+                getPlayers()
+            } catch (e: HttpException) {
+                val errorBody = e.response()?.errorBody()?.string()
+                Log.e("AddPlayerError", "HTTP Error: ${e.code()} - $errorBody")
+                _errorMessage.value = errorBody
+            }
+        }
+    }
+
     private fun getPlayers() {
         viewModelScope.launch {
             _isLoading.value = true
@@ -72,19 +85,5 @@ class PlayerViewModel: ViewModel(){
             .maxByOrNull { it.value.size }
             ?.let { Pair(it.key, it.value.size) }
             ?: Pair("", 0)
-    }
-
-
-    fun removePlayerFromTeam(nome: String, sigla: String) {
-        viewModelScope.launch {
-            try {
-                RetrofitInstance.api.removePlayerFromTeam(nome, sigla)
-                getPlayers()
-            } catch (e: HttpException) {
-                val errorBody = e.response()?.errorBody()?.string()
-                Log.e("AddPlayerError", "HTTP Error: ${e.code()} - $errorBody")
-                _errorMessage.value = errorBody
-            }
-        }
     }
 }
